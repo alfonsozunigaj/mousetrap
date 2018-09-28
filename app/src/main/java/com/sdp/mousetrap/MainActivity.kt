@@ -2,40 +2,80 @@ package com.sdp.mousetrap
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.NavigationView
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
+import android.view.MenuItem
+import android.view.View
 import java.util.*
+import android.R.attr.fragment
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mRecyclerView : RecyclerView
-    val mAdapter : RecyclerAdapter = RecyclerAdapter()
+    private lateinit var mDrawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setUpRecyclerView()
+
+        mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+
+        val navigationView: NavigationView = findViewById(R.id.nav_view) as NavigationView
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            if (menuItem.itemId.equals(R.id.nav_polls)) {
+                val manager = supportFragmentManager
+                val transaction = manager.beginTransaction()
+                transaction.replace(R.id.main_frame, PollsFragment())
+                transaction.commit()
+            }
+            mDrawerLayout.closeDrawers()
+            true
+        }
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        val actionbar: ActionBar? = supportActionBar
+        actionbar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_menu)
+        }
+
+        mDrawerLayout.addDrawerListener(
+                object : DrawerLayout.DrawerListener {
+                    override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                        // Respond when the drawer's position changes
+                    }
+
+                    override fun onDrawerOpened(drawerView: View) {
+                        // Respond when the drawer is opened
+                    }
+
+                    override fun onDrawerClosed(drawerView: View) {
+                        // Respond when the drawer is closed
+                    }
+
+                    override fun onDrawerStateChanged(newState: Int) {
+                        // Respond when the drawer motion state changes
+                    }
+                }
+        )
     }
 
-    fun setUpRecyclerView(){
-        mRecyclerView = findViewById(R.id.rvPollList) as RecyclerView
-        mRecyclerView.setHasFixedSize(true)
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
-        mAdapter.RecyclerAdapter(getPolls(), this)
-        mRecyclerView.adapter = mAdapter
-    }
-
-    fun getPolls(): MutableList<Poll> {
-        var polls:MutableList<Poll> = ArrayList()
-        polls.add(Poll("Burger King", 12000, Date(2018, 5,12), true, 2, Date(2019, 5,7), 20, 500))
-        polls.add(Poll("Nike", 25000, Date(2018, 8,12), true, 2, Date(2019, 5,12), 20, 200))
-        polls.add(Poll("Microsoft", 6000, Date(2018, 7,12), true, 5, Date(2019, 5,13), 100, 190))
-        polls.add(Poll("Santa Isabel", 7800, Date(2018, 5,12), true, 2, Date(2019, 5,5), 80, 250))
-        polls.add(Poll("AWS", 18900, Date(2018, 12,12), true, 2, Date(2019, 9,12), 20, 200))
-        polls.add(Poll("Paris", 15500, Date(2018, 1,12), true, 3, Date(2019, 2,12), 45, 200))
-        polls.add(Poll("Universidad de los Andes", 10000, Date(2018, 5,12), true, 2, Date(2019, 5,12), 20, 200))
-        polls.add(Poll("Reebook", 17450, Date(2018, 4,12), true, 10, Date(2019, 4,12), 75, 200))
-        return polls
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                mDrawerLayout.openDrawer(GravityCompat.START)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     fun getEmojiByUnicode(unicode: Int): String {
