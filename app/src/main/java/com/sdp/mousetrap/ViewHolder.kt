@@ -11,17 +11,17 @@ import com.squareup.picasso.Picasso
 
 class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val title = view.findViewById(R.id.title) as TextView
-    val realName = view.findViewById(R.id.tvRealName) as TextView
-    val publisher = view.findViewById(R.id.tvPublisher) as TextView
+    val description = view.findViewById(R.id.description) as TextView
+    val cheeses = view.findViewById(R.id.cheeses) as TextView
     val avatar = view.findViewById(R.id.logo) as ImageView
 
     @SuppressLint("SetTextI18n")
     fun bind(poll:Poll, context: Context){
         title.text = poll.client
-        realName.text = poll.cost.toString()
-        publisher.text = poll.score.toString() + ' ' + getEmojiByUnicode(0x1F9C0)
+        description.text = poll.description
+        cheeses.text = poll.score.toString() + ' ' + getEmojiByUnicode(0x1F9C0)
+        avatar.loadUrl(poll.image_url)
         itemView.setOnClickListener(View.OnClickListener { Toast.makeText(context, poll.client, Toast.LENGTH_SHORT).show() })
-        avatar.loadUrl("https://www.festisite.com/static/partylogo/img/logos/burger-king.png")
     }
     fun ImageView.loadUrl(url: String) {
         Picasso.with(context).load(url).into(this)

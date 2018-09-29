@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
-            if (menuItem.itemId.equals(R.id.nav_polls)) {
+            if (menuItem.itemId == R.id.nav_home) {
+                loadHome()
+            }
+            if (menuItem.itemId == R.id.nav_polls) {
                 val manager = supportFragmentManager
                 val transaction = manager.beginTransaction()
                 transaction.replace(R.id.main_frame, PollsFragment())
@@ -38,6 +41,8 @@ class MainActivity : AppCompatActivity() {
             mDrawerLayout.closeDrawers()
             true
         }
+
+        loadHome()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -76,6 +81,13 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun loadHome() {
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
+        transaction.replace(R.id.main_frame, HomeFragment())
+        transaction.commit()
     }
 
     fun getEmojiByUnicode(unicode: Int): String {

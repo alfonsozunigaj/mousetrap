@@ -8,4 +8,9 @@
     <string name="slideshow">Slideshow</string>
     <string name="tools">Tools</string>
     <string name="polls">Polls</string>
+    <string name="mousetraplogo">MousetrapLogo</string>
+    <string name="home">Home</string>
+    <string name="prices">Prices</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Log Out</string>
 </resources>
