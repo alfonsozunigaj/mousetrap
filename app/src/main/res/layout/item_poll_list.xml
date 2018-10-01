@@ -47,7 +47,7 @@
                 tools:text= "dadawdawdwd" />
 
             <TextView
-                android:id="@+id/tvRealName"
+                android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
@@ -57,7 +57,7 @@
                 tools:text = "wdawd"/>
 
             <TextView
-                android:id="@+id/tvPublisher"
+                android:id="@+id/cheeses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

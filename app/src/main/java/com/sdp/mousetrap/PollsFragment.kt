@@ -34,14 +34,14 @@ class PollsFragment : Fragment() {
 
     fun getPolls(): MutableList<Poll> {
         var polls:MutableList<Poll> = ArrayList()
-        polls.add(Poll("Burger King", 12000, Date(2018, 5,12), true, 2, Date(2019, 5,7), 20, 500))
-        polls.add(Poll("Nike", 25000, Date(2018, 8,12), true, 2, Date(2019, 5,12), 20, 200))
-        polls.add(Poll("Microsoft", 6000, Date(2018, 7,12), true, 5, Date(2019, 5,13), 100, 190))
-        polls.add(Poll("Santa Isabel", 7800, Date(2018, 5,12), true, 2, Date(2019, 5,5), 80, 250))
-        polls.add(Poll("AWS", 18900, Date(2018, 12,12), true, 2, Date(2019, 9,12), 20, 200))
-        polls.add(Poll("Paris", 15500, Date(2018, 1,12), true, 3, Date(2019, 2,12), 45, 200))
-        polls.add(Poll("Universidad de los Andes", 10000, Date(2018, 5,12), true, 2, Date(2019, 5,12), 20, 200))
-        polls.add(Poll("Reebook", 17450, Date(2018, 4,12), true, 10, Date(2019, 4,12), 75, 200))
+        polls.add(Poll("Burger King", 12000, Date(2018, 5,12), true, 2, Date(2019, 5,7), 20, 500, "Are we better that KFC?", "https://www.festisite.com/static/partylogo/img/logos/burger-king.png"))
+        polls.add(Poll("Nike", 25000, Date(2018, 8,12), true, 2, Date(2019, 5,12), 20, 200, "Do you JUST DO IT?", "https://us1.hatstoremedia.com/hatstore/images/image-nike-kepsar-2017-02-21-114202041/555/555/0/nike-kepsar.png"))
+        polls.add(Poll("Microsoft", 6000, Date(2018, 7,12), true, 5, Date(2019, 5,13), 100, 190, "Tell us what's wrong with Edge.", "https://www.pointofsuccess.com/wp-content/uploads/Microsoft-Logo.png"))
+        polls.add(Poll("Santa Isabel", 7800, Date(2018, 5,12), true, 2, Date(2019, 5,5), 80, 250, "Who was Saint Isabel?", "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Logo_Santa_Isabel_Cencosud_transparente.svg/1024px-Logo_Santa_Isabel_Cencosud_transparente.svg.png"))
+        polls.add(Poll("AWS", 18900, Date(2018, 12,12), true, 2, Date(2019, 9,12), 20, 200, "Let's talk about prime.", "http://www.crein.com/blog/wp-content/uploads/2013/05/amazon-ec2.png"))
+        polls.add(Poll("Paris", 15500, Date(2018, 1,12), true, 3, Date(2019, 2,12), 45, 200, "Customer satisfaction", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Logo_Paris_Cencosud.png/230px-Logo_Paris_Cencosud.png"))
+        polls.add(Poll("Universidad de los Andes", 10000, Date(2018, 5,12), true, 2, Date(2019, 5,12), 20, 200, "Writing center sucks", "https://s3-us-west-2.amazonaws.com/enterreno-production/users/avatars/000/001/575/thumb/Logo_uandes.png"))
+        polls.add(Poll("Reebook", 17450, Date(2018, 4,12), true, 10, Date(2019, 4,12), 75, 200, "Better thar PUMA, right?", "https://www.seeklogo.net/wp-content/uploads/2014/06/reebok-vector-logo.png"))
         return polls
     }
 }
