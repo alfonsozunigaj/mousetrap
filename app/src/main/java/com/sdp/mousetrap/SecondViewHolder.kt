@@ -11,14 +11,12 @@ import com.squareup.picasso.Picasso
 
 class SecondViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val title = view.findViewById(R.id.title) as TextView
-    val realName = view.findViewById(R.id.tvRealName) as TextView
-    val publisher = view.findViewById(R.id.tvPublisher) as TextView
     val avatar = view.findViewById(R.id.logo) as ImageView
 
     @SuppressLint("SetTextI18n")
     fun bind(award:Award, context: Context){
         title.text = award.name
-        realName.text = award.price.toString() + ' ' + getEmojiByUnicode(0x1F9C0)
+        title.text = award.price.toString() + ' ' + getEmojiByUnicode(0x1F9C0)
         itemView.setOnClickListener(View.OnClickListener { Toast.makeText(context, award.name, Toast.LENGTH_SHORT).show() })
         avatar.loadUrl(award.image_url)
     }

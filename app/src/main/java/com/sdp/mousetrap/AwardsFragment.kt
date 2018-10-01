@@ -33,16 +33,18 @@ class AwardsFragment : Fragment() {
     }
 
     fun setUpRecyclerView(view: View) {
-        mRecyclerView = view.findViewById(R.id.rvPollList) as RecyclerView
+        mRecyclerView = view.findViewById(R.id.rvAwardList) as RecyclerView
         mRecyclerView.setHasFixedSize(true)
-        mRecyclerView.layoutManager = GridLayoutManager(context, 2);
+        mRecyclerView.layoutManager = GridLayoutManager(context, 2)
         mAdapter.SecondRecyclerAdapter(getAwards(), context)
         mRecyclerView.adapter = mAdapter
     }
 
     fun getAwards(): MutableList<Award> {
         var awards:MutableList<Award> = ArrayList()
-        awards.add(Award("iPod Classic", 59990, "https://i1.wp.com/www.playsat.es/wp-content/uploads/2015/10/Reparar-iPod-Classic.png?fit=420%2C420&ssl=1"))
+        awards.add(Award("iPod Classic", 59990, "https://www.bytetotal.com/sites/default/files/styles/nota_full/public/ipod-classic-2009.png?itok=YrV-fTFw"))
+        awards.add(Award("Amazon Echo", 29990, "https://images.ctfassets.net/gdch8ejbyxg5/724b0zh2BU64QsAsQmYIOk/156f188bd06afa7ceddd76ebeb9d4ddd/Amazon_Dot_Front.png"))
+        awards.add(Award("Chromecast", 15990, "https://c1-ebgames.eb-cdn.com.au/merchandising/images/packshots/6b8320e826e24ab99ce42127c4065ce0_Large.png"))
         return awards
     }
 }

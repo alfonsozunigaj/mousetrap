@@ -29,13 +29,18 @@ class MainActivity : AppCompatActivity() {
         val navigationView: NavigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener { menuItem ->
             menuItem.isChecked = true
+            val manager = supportFragmentManager
             if (menuItem.itemId == R.id.nav_home) {
                 loadHome()
             }
-            if (menuItem.itemId == R.id.nav_polls) {
-                val manager = supportFragmentManager
+            else if (menuItem.itemId == R.id.nav_polls) {
                 val transaction = manager.beginTransaction()
                 transaction.replace(R.id.main_frame, PollsFragment())
+                transaction.commit()
+            }
+            else if (menuItem.itemId == R.id.nav_prices) {
+                val transaction = manager.beginTransaction()
+                transaction.replace(R.id.main_frame, AwardsFragment())
                 transaction.commit()
             }
             mDrawerLayout.closeDrawers()
