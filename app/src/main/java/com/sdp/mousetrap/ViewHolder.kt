@@ -23,6 +23,7 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var manager = fragmentDelegate.createFragmentManager();
             val transaction = manager.beginTransaction()
             transaction.replace(R.id.main_frame, PollFragment.newInstance(poll))
+            transaction.addToBackStack(null)
             transaction.commit()
         }
     }

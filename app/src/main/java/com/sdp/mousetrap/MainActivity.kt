@@ -32,23 +32,25 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
             menuItem.isChecked = true
             val manager = supportFragmentManager
             if (menuItem.itemId == R.id.nav_home) {
-                loadHome()
+                loadHome(true)
             }
             else if (menuItem.itemId == R.id.nav_polls) {
                 val transaction = manager.beginTransaction()
                 transaction.replace(R.id.main_frame, PollsFragment())
+                transaction.addToBackStack(null)
                 transaction.commit()
             }
             else if (menuItem.itemId == R.id.nav_prices) {
                 val transaction = manager.beginTransaction()
                 transaction.replace(R.id.main_frame, AwardsFragment())
+                transaction.addToBackStack(null)
                 transaction.commit()
             }
             mDrawerLayout.closeDrawers()
             true
         }
 
-        loadHome()
+        loadHome(false)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -93,10 +95,13 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
         return supportFragmentManager
     }
 
-    fun loadHome() {
+    fun loadHome(condition: Boolean) {
         val manager = supportFragmentManager
         val transaction = manager.beginTransaction()
         transaction.replace(R.id.main_frame, HomeFragment())
+        if (condition) {
+            transaction.addToBackStack(null)
+        }
         transaction.commit()
     }
 
