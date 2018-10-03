@@ -1,8 +1,9 @@
 package com.sdp.mousetrap
 
+import java.io.Serializable
 import java.util.*
 
-class Poll {
+class Poll : Serializable {
     var client: String
     var cost: Int
     var creation_date: Date

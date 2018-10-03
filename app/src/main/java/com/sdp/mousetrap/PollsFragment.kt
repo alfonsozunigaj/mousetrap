@@ -1,6 +1,7 @@
 package com.sdp.mousetrap
 
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -15,6 +16,15 @@ class PollsFragment : Fragment() {
 
     lateinit var mRecyclerView : RecyclerView
     val mAdapter : RecyclerAdapter = RecyclerAdapter()
+    var delegate: FragmentDelegate? = null
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        if (context is FragmentDelegate) {
+            delegate = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,7 +38,7 @@ class PollsFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.rvPollList) as RecyclerView
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(context)
-        mAdapter.RecyclerAdapter(getPolls(), context)
+        mAdapter.RecyclerAdapter(getPolls(), delegate as FragmentDelegate)
         mRecyclerView.adapter = mAdapter
     }
 

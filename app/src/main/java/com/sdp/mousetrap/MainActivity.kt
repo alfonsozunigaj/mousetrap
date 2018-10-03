@@ -13,10 +13,11 @@ import android.view.MenuItem
 import android.view.View
 import java.util.*
 import android.R.attr.fragment
+import android.support.v4.app.FragmentManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FragmentDelegate {
 
     private lateinit var mDrawerLayout: DrawerLayout
 
@@ -86,6 +87,10 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun createFragmentManager(): FragmentManager {
+        return supportFragmentManager
     }
 
     fun loadHome() {

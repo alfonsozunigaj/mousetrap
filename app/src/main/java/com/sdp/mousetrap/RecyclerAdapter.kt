@@ -8,16 +8,16 @@ import android.view.ViewGroup
 class RecyclerAdapter : RecyclerView.Adapter<ViewHolder>() {
 
     var polls: MutableList<Poll>  = ArrayList()
-    lateinit var context: Context
+    lateinit var fragmentDelegate: FragmentDelegate
 
-    fun RecyclerAdapter(polls : MutableList<Poll>, context: Context){
+    fun RecyclerAdapter(polls : MutableList<Poll>, fragmentDelegate: FragmentDelegate){
         this.polls = polls
-        this.context = context
+        this.fragmentDelegate = fragmentDelegate
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = polls.get(position)
-        holder.bind(item, context)
+        val item = polls[position]
+        holder.bind(item, fragmentDelegate)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

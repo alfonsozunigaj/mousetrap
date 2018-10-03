@@ -10,7 +10,7 @@ import android.widget.Toast
 import com.squareup.picasso.Picasso
 
 class SecondViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    val title = view.findViewById(R.id.title) as TextView
+    val title = view.findViewById(R.id.tittle) as TextView
     val avatar = view.findViewById(R.id.logo) as ImageView
 
     @SuppressLint("SetTextI18n")
