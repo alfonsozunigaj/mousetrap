@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
+            else if (menuItem.itemId == R.id.nav_profile) {
+                val transaction = manager.beginTransaction()
+                transaction.replace(R.id.main_frame, UserFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
             mDrawerLayout.closeDrawers()
             true
         }
