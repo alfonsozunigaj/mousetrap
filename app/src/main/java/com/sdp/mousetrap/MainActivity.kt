@@ -13,17 +13,25 @@ import android.view.MenuItem
 import android.view.View
 import java.util.*
 import android.R.attr.fragment
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.support.v4.app.FragmentManager
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), FragmentDelegate {
 
     private lateinit var mDrawerLayout: DrawerLayout
+    private val Preferences_name : String = "Prefs"
+    private var Preferences: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Preferences = this.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
 
         mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
 
@@ -87,6 +95,19 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        val token : String = Preferences!!.getString("token", "0")
+        if (token=="0"){
+            Toast.makeText(this, "no token", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, Login::class.java)
+            startActivityForResult(intent,1)
+        }
+        else {
+            Toast.makeText(this, "Welcome $token !!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -113,5 +134,16 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
 
     fun getEmojiByUnicode(unicode: Int): String {
         return String(Character.toChars(unicode))
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if ((requestCode == 1) && (resultCode == RESULT_OK)) {
+            val t = data!!.extras.getString("token")
+            val editor = Preferences!!.edit()
+            editor.putString("token", t)
+            editor.commit()
+        }
     }
 }
