@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.sdp.mousetrap.DB.Award
 import com.squareup.picasso.Picasso
 
 class SecondViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -15,7 +16,7 @@ class SecondViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val avatar = view.findViewById(R.id.logo) as ImageView
 
     @SuppressLint("SetTextI18n")
-    fun bind(award:Award, context: Context){
+    fun bind(award: Award, context: Context){
         title.text = award.name
         title.text = award.price.toString() + ' ' + getEmojiByUnicode(0x1F9C0)
         avatar.loadUrl(award.image_url)

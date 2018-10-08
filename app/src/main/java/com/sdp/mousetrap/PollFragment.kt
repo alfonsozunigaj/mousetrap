@@ -8,10 +8,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import com.sdp.mousetrap.DB.Alternative
+import com.sdp.mousetrap.DB.Poll
+import com.sdp.mousetrap.DB.Question
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_poll.*
 
 
 class PollFragment : Fragment() {
@@ -26,6 +29,9 @@ class PollFragment : Fragment() {
     }
 
     var delegate: FragmentDelegate? = null
+    val answers = Bundle()
+    val questions: ArrayList<Question> = ArrayList()
+    val alternatives: ArrayList<Alternative> = ArrayList()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -40,8 +46,22 @@ class PollFragment : Fragment() {
         // Inflate the layout for this fragment
         var poll : Poll = arguments.getSerializable("poll") as Poll
         var view : View = inflater.inflate(R.layout.fragment_poll, container, false)
+        createQuestions(poll, view)
         setUpPollIntro(poll, view)
         return view
+    }
+
+    fun createQuestions(poll: Poll, view: View) {
+        questions.add(Question(poll, "Do you like Burger King?", 0))
+        questions.add(Question(poll, "How much?", 1))
+            alternatives.add(Alternative(questions[1], "Not much"))
+            alternatives.add(Alternative(questions[1], "Very much"))
+            alternatives.add(Alternative(questions[1], "A lot"))
+        questions.add(Question(poll, "What's your favorite one?", 2))
+            alternatives.add(Alternative(questions[2], "Wopper"))
+            alternatives.add(Alternative(questions[2], "Tenders"))
+            alternatives.add(Alternative(questions[2], "Chocolate pie"))
+            alternatives.add(Alternative(questions[2], "Fries"))
     }
 
     fun setUpPollIntro(poll: Poll, view: View) {
@@ -50,22 +70,76 @@ class PollFragment : Fragment() {
         val startButton = view.findViewById(R.id.start_button) as Button
         description.text = poll.description
         logo.loadUrl(poll.image_url)
+
+
+
         startButton.setOnClickListener {
             var builder = AlertDialog.Builder(context)
             builder.setTitle("Confirmation Message")
             builder.setMessage("Are you sure you want to answer this poll?")
             builder.setPositiveButton("YES") {dialog, which ->
                 startButton.visibility = GONE
-                var lista: ArrayList<String> = ArrayList()
-                lista.add("Opcion 1")
-                lista.add("Opcion 2")
-                lista.add("Opcion 3")
-                lista.add("Opcion 4")
-                lista.add("Opcion 5")
-                val transaction = delegate!!.createFragmentManager().beginTransaction()
-                transaction.replace(R.id.question_frame, MultipleChoiceFragment.newInstance(lista))
-                transaction.addToBackStack(null)
+                val layouts: ArrayList<FrameLayout> = ArrayList()
+                layouts.add(view.findViewById(R.id.question1_frame)  as FrameLayout)
+                layouts.add(view.findViewById(R.id.question2_frame)  as FrameLayout)
+                layouts.add(view.findViewById(R.id.question3_frame)  as FrameLayout)
+                layouts[0].visibility = VISIBLE
+                var last_question = false
+                for (i in 0 until questions.count()) {
+                    if (i == questions.count() -1) {
+                        last_question = !last_question
+                    }
+                    var question: Question = questions[i]
+                    when {
+                        question.type == 0 -> {
+                            //create open question in layouts[i]
+                            var transaction = delegate!!.createFragmentManager().beginTransaction()
+                            transaction.replace(layouts[i].id, OpenQuestionFragment.newInstance(answers, last_question, i, layouts, question.question))
+                            transaction.commit()
+                        }
+                        question.type == 1 -> {
+                            //create unique choice question in layouts[i]
+                            val my_alternatives: ArrayList<Alternative> = ArrayList()
+                            for (j in 0 until alternatives.count()) {
+                                if (alternatives[j].question == question) {
+                                    my_alternatives.add(alternatives[j])
+                                }
+                            }
+                            var transaction = delegate!!.createFragmentManager().beginTransaction()
+                            transaction.replace(layouts[i].id, UniqueChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question))
+                            transaction.commit()
+                        }
+                        question.type == 2 -> {
+                            //create multiple choice question in layouts[i]
+                            val my_alternatives: ArrayList<Alternative> = ArrayList()
+                            for (j in 0 until alternatives.count()) {
+                                if (alternatives[j].question == question) {
+                                    my_alternatives.add(alternatives[j])
+                                }
+                            }
+                            var transaction = delegate!!.createFragmentManager().beginTransaction()
+                            transaction.replace(layouts[i].id, MultipleChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question, delegate))
+                            transaction.commit()
+                        }
+                    }
+                }
+                /*var transaction = delegate!!.createFragmentManager().beginTransaction()
+                transaction.replace(R.id.question1_frame, OpenQuestionFragment())
                 transaction.commit()
+                startButton.setOnClickListener {
+                    var ll2: FrameLayout = view.findViewById(R.id.question2_frame) as FrameLayout
+                    ll1.visibility = GONE
+                    ll2.visibility = VISIBLE
+                    var lista: ArrayList<String> = ArrayList()
+                    lista.add("Opcion 1")
+                    lista.add("Opcion 2")
+                    lista.add("Opcion 3")
+                    lista.add("Opcion 4")
+                    lista.add("Opcion 5")
+                    transaction = delegate!!.createFragmentManager().beginTransaction()
+                    transaction.replace(R.id.question2_frame, UniqueChoiceFragment.newInstance(lista))
+                    transaction.commit()
+                }*/
             }
             builder.setNegativeButton("NO") {dialog, which ->
                 Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show()
@@ -78,6 +152,4 @@ class PollFragment : Fragment() {
     fun ImageView.loadUrl(url: String) {
         Picasso.with(context).load(url).into(this)
     }
-
-
 }

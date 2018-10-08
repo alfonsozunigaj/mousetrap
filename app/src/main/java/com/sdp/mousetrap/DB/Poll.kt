@@ -1,4 +1,4 @@
-package com.sdp.mousetrap
+package com.sdp.mousetrap.DB
 
 import java.io.Serializable
 import java.util.*

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MultipleChoiceFragment"
+    tools:context=".UniqueChoiceFragment"
     android:orientation="vertical">
 
     <TextView
@@ -15,10 +15,15 @@
         android:textSize="18sp" />
 
     <LinearLayout
-        android:id="@+id/multiple_options_layout"
+        android:id="@+id/multiple_alternatives_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/multiple_alternatives_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
