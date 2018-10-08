@@ -60,6 +60,15 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
                 transaction.addToBackStack(null)
                 transaction.commit()
             }
+            else if (menuItem.itemId == R.id.nav_logout) {
+                val editor = Preferences!!.edit()
+                editor.clear()
+                editor.commit()
+                navigationView.getMenu().getItem(0).setChecked(true)
+                loadHome(true)
+                val intent = Intent(this, Login::class.java)
+                startActivityForResult(intent,1)
+            }
             mDrawerLayout.closeDrawers()
             true
         }
@@ -99,12 +108,11 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
         super.onStart()
         val token : String = Preferences!!.getString("token", "0")
         if (token=="0"){
-            Toast.makeText(this, "no token", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, Login::class.java)
             startActivityForResult(intent,1)
         }
         else {
-            Toast.makeText(this, "Welcome $token !!", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Welcome $token !!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -140,9 +148,15 @@ class MainActivity : AppCompatActivity(), FragmentDelegate {
         super.onActivityResult(requestCode, resultCode, data)
 
         if ((requestCode == 1) && (resultCode == RESULT_OK)) {
-            val t = data!!.extras.getString("token")
+            val token = data!!.extras.getString("token")
+            val id = data!!.extras.getInt("id")
+            val email = data!!.extras.getString("email")
+            val username = data!!.extras.getString("username")
             val editor = Preferences!!.edit()
-            editor.putString("token", t)
+            editor.putString("token", token)
+            editor.putInt("id", id)
+            editor.putString("email", email)
+            editor.putString("username", username)
             editor.commit()
         }
     }
