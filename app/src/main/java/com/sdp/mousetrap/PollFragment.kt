@@ -53,7 +53,7 @@ class PollFragment : Fragment() {
         var poll : Poll = arguments.getSerializable("poll") as Poll
         var view : View = inflater.inflate(R.layout.fragment_poll, container, false)
         createQuestions(poll, view)
-        setUpPollIntro(poll, view)
+        //setUpPollIntro(poll, view)
         return view
     }
 
@@ -73,10 +73,14 @@ class PollFragment : Fragment() {
                         val id = item.getString("url").removeSurrounding("http://127.0.0.1:8000/api/questions/","/").toInt()
                         val description = item.getString("question")
                         val type = item.getString("type").toInt()
-                        //questions.add(Question(id,poll, description, type))
+                        questions.add(Question(id,poll, description, type))
                         if (type != 0){
+                            alternatives.add(Alternative(questions[i], "Not much"))
+                            alternatives.add(Alternative(questions[i], "Very much"))
+                            alternatives.add(Alternative(questions[i], "A lot"))
                         }
                     }
+                    setUpPollIntro(poll, view)
                 },
                 Response.ErrorListener { error ->
                     error.printStackTrace()
@@ -84,16 +88,6 @@ class PollFragment : Fragment() {
                 })
 
         queue.add(jsonObjectRequest)
-        questions.add(Question(1,poll, "Do you like Burger King?", 0))
-        questions.add(Question(2,poll, "How much?", 2))
-            alternatives.add(Alternative(questions[1], "Not much"))
-            alternatives.add(Alternative(questions[1], "Very much"))
-            alternatives.add(Alternative(questions[1], "A lot"))
-        questions.add(Question(3,poll, "What's your favorite one?", 2))
-            alternatives.add(Alternative(questions[2], "Wopper"))
-            alternatives.add(Alternative(questions[2], "Tenders"))
-            alternatives.add(Alternative(questions[2], "Chocolate pie"))
-            alternatives.add(Alternative(questions[2], "Fries"))
     }
 
     fun setUpPollIntro(poll: Poll, view: View) {
