@@ -30,8 +30,8 @@ class activation : AppCompatActivity() {
     fun activation_request(){
         val e = email.text.toString().trim(' ')
         val queue = Volley.newRequestQueue(this)
-        val url = "https://app-api.assadi.io/api/activate/$e" //hay que cambiarlo por link de activacion.
-        println("Response is: $e")
+        val url = "https://app-api.assadi.io/api/activate/?email=$e" //hay que cambiarlo por link de activacion.
+        println("Response is: $url")
 
         val jsonRequest = JsonObjectRequest(url, null,
                 Response.Listener { response ->
@@ -40,7 +40,7 @@ class activation : AppCompatActivity() {
                 },
                 Response.ErrorListener { error ->
                     error.printStackTrace()
-                    Toast.makeText(this, "Network Problem.", Toast.LENGTH_SHORT).show()
+                    finish()
                     println("That didn't work!")
                 })
         queue.add(jsonRequest)

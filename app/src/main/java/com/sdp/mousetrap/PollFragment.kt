@@ -11,10 +11,16 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.sdp.mousetrap.DB.Alternative
 import com.sdp.mousetrap.DB.Poll
 import com.sdp.mousetrap.DB.Question
 import com.squareup.picasso.Picasso
+import java.util.*
 
 
 class PollFragment : Fragment() {
@@ -52,12 +58,38 @@ class PollFragment : Fragment() {
     }
 
     fun createQuestions(poll: Poll, view: View) {
-        questions.add(Question(poll, "Do you like Burger King?", 0))
-        questions.add(Question(poll, "How much?", 1))
+        val poll_id : Int = poll.id
+        val queue = Volley.newRequestQueue(context)
+        val url = "https://app-api.assadi.io/api/surveys/$poll_id"
+        println("Response is: $url")
+
+        val jsonObjectRequest = JsonObjectRequest(url,null,
+                Response.Listener { response ->
+                    val Qs = response.getJSONArray("questions")
+                    println("Response is: ${Qs.length()}")
+                    for (i in 0..(Qs.length() - 1)) {
+                        val item = Qs.getJSONObject(i)
+                        println("Response is: $item")
+                        val id = item.getString("url").removeSurrounding("http://127.0.0.1:8000/api/questions/","/").toInt()
+                        val description = item.getString("question")
+                        val type = item.getString("type").toInt()
+                        //questions.add(Question(id,poll, description, type))
+                        if (type != 0){
+                        }
+                    }
+                },
+                Response.ErrorListener { error ->
+                    error.printStackTrace()
+                    println("Network error!")
+                })
+
+        queue.add(jsonObjectRequest)
+        questions.add(Question(1,poll, "Do you like Burger King?", 0))
+        questions.add(Question(2,poll, "How much?", 2))
             alternatives.add(Alternative(questions[1], "Not much"))
             alternatives.add(Alternative(questions[1], "Very much"))
             alternatives.add(Alternative(questions[1], "A lot"))
-        questions.add(Question(poll, "What's your favorite one?", 2))
+        questions.add(Question(3,poll, "What's your favorite one?", 2))
             alternatives.add(Alternative(questions[2], "Wopper"))
             alternatives.add(Alternative(questions[2], "Tenders"))
             alternatives.add(Alternative(questions[2], "Chocolate pie"))

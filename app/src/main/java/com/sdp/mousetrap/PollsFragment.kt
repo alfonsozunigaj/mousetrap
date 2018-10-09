@@ -64,13 +64,14 @@ class PollsFragment : Fragment() {
         Preferences = this.activity.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
         val user_id : Int = Preferences!!.getInt("id", 0)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://app-api.assadi.io/api/surveys/?user_id=$user_id"
+        val url = "https://app-api.assadi.io/api/surveys/"
+        println("Response is: $url")
 
         val jsonArrayRequest = JsonArrayRequest(Request.Method.GET,url,null,
                 Response.Listener { response ->
                     for (i in 0..(response.length() - 1)) {
                         val item = response.getJSONObject(i)
-                        val id = item.getString("url").removeSurrounding("http://localhost:8000/api/surveys/","/").toInt()
+                        val id = item.getString("url").removeSurrounding("http://127.0.0.1:8000/api/surveys/","/").toInt()
                         val client = item.getString("client")
                         val cost = item.getInt("cost")
                         val creation_date = item.getString("creation_date").substringBefore("T")
