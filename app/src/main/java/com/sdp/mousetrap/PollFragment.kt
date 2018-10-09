@@ -52,6 +52,8 @@ class PollFragment : Fragment() {
         // Inflate the layout for this fragment
         var poll : Poll = arguments.getSerializable("poll") as Poll
         var view : View = inflater.inflate(R.layout.fragment_poll, container, false)
+        val startButton = view.findViewById(R.id.start_button) as Button
+        startButton.isClickable=false
         createQuestions(poll, view)
         //setUpPollIntro(poll, view)
         return view
@@ -61,12 +63,10 @@ class PollFragment : Fragment() {
         val poll_id : Int = poll.id
         val queue = Volley.newRequestQueue(context)
         val url = "https://app-api.assadi.io/api/surveys/$poll_id"
-        println("Response is: $url")
 
         val jsonObjectRequest = JsonObjectRequest(url,null,
                 Response.Listener { response ->
                     val Qs = response.getJSONArray("questions")
-                    println("Response is: ${Qs.length()}")
                     for (i in 0..(Qs.length() - 1)) {
                         val item = Qs.getJSONObject(i)
                         println("Response is: $item")
@@ -75,9 +75,12 @@ class PollFragment : Fragment() {
                         val type = item.getString("type").toInt()
                         questions.add(Question(id,poll, description, type))
                         if (type != 0){
-                            alternatives.add(Alternative(questions[i], "Not much"))
-                            alternatives.add(Alternative(questions[i], "Very much"))
-                            alternatives.add(Alternative(questions[i], "A lot"))
+                            val As = item.getJSONArray("alternatives")
+                            for (j in 0..(As.length() - 1)) {
+                                val item2 = As.getJSONObject(j)
+                                println("Alternative is: $item2")
+                                alternatives.add(Alternative(questions[i], item2.getString("value")))
+                            }
                         }
                     }
                     setUpPollIntro(poll, view)
@@ -173,6 +176,7 @@ class PollFragment : Fragment() {
             var dialog: AlertDialog = builder.create()
             dialog.show()
         }
+        startButton.isClickable=true
     }
 
     fun ImageView.loadUrl(url: String) {
