@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -20,12 +21,16 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        user = findViewById(R.id.email) as EditText
+        user = findViewById(R.id.username) as EditText
         password = findViewById(R.id.password) as EditText
         val btn = findViewById(R.id.login_btn) as Button
         btn.setOnClickListener{
             login_request()
-
+        }
+        val act = findViewById(R.id.activate) as TextView
+        act.setOnClickListener{
+            val intent = Intent(this, activation::class.java)
+            startActivity(intent)
         }
     }
 

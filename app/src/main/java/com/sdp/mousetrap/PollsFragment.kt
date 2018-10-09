@@ -3,6 +3,7 @@ package com.sdp.mousetrap
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -28,6 +29,9 @@ class PollsFragment : Fragment() {
     lateinit var mRecyclerView : RecyclerView
     val mAdapter : RecyclerAdapter = RecyclerAdapter()
     var delegate: FragmentDelegate? = null
+
+    private val Preferences_name : String = "Prefs"
+    private var Preferences: SharedPreferences? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -57,15 +61,12 @@ class PollsFragment : Fragment() {
     fun getPolls() {
         var polls:MutableList<Poll> = ArrayList()
         //polls.add(Poll(1,"Burger King", 12000, Date(2018, 5, 12), true, 2, Date(2019, 5, 7), 20, 500, "Are we better that KFC?", "https://www.festisite.com/static/partylogo/img/logos/burger-king.png"))
+        Preferences = this.activity.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
+        val user_id : Int = Preferences!!.getInt("id", 0)
         val queue = Volley.newRequestQueue(context)
-        val url = "https://app-api.assadi.io/api/surveys/"
+        val url = "https://app-api.assadi.io/api/surveys/?user_id=$user_id"
 
-        val jsonArray = JSONArray()
-        val jsonObject = JSONObject()
-        jsonObject.put("id",1)
-        jsonArray.put(jsonObject)
-
-        val jsonArrayRequest = JsonArrayRequest(Request.Method.GET,url,jsonArray,
+        val jsonArrayRequest = JsonArrayRequest(Request.Method.GET,url,null,
                 Response.Listener { response ->
                     for (i in 0..(response.length() - 1)) {
                         val item = response.getJSONObject(i)

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login">
+    tools:context=".activation">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,41 +14,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
-            android:layout_marginRight="92dp"
-            android:text="Sign in"
+            android:layout_marginRight="45dp"
+            android:text="Activate Account"
             android:layout_gravity="center"
             android:textStyle="bold"
             android:textSize="20dp"/>
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/email"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:hint="Username"/>
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Password"
-            android:inputType="textPassword"/>
-        <TextView
-            android:id="@+id/activate"
+            android:hint="Email"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="70dp"
-            android:clickable="true"
-            android:text="Activate account"/>
-        <Button
-            android:id="@+id/login_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="80dp"
-            android:text="Login" />
+            android:layout_marginTop="15dp">
+            <Button
+                android:id="@+id/back_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:text="Back" />
+            <Button
+                android:id="@+id/send_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send password" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>
