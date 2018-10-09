@@ -4,6 +4,7 @@ import java.io.Serializable
 import java.util.*
 
 class Poll : Serializable {
+    var id: Int
     var client: String
     var cost: Int
     var creation_date: Date
@@ -15,9 +16,10 @@ class Poll : Serializable {
     var description: String
     var image_url: String
 
-    constructor(client: String, cost: Int, creation_date: Date, anonymous: Boolean, score: Int,
+    constructor(id: Int, client: String, cost: Int, creation_date: Date, anonymous: Boolean, score: Int,
                 deadline: Date, minimum_answers: Int, maximum_answers: Int, description: String,
                 image_url: String) {
+        this.id = id
         this.client = client
         this.cost = cost
         this.creation_date = creation_date

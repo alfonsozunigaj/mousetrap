@@ -47,7 +47,7 @@ class Login : AppCompatActivity() {
         jsonObject.put("username",u)
         jsonObject.put("password",p)
 
-        val stringRequest = JsonObjectRequest(url, jsonObject,
+        val jsonRequest = JsonObjectRequest(url, jsonObject,
                 Response.Listener { response ->
                     println("Response is: $response")
                     val token = response.getString("token")
@@ -67,8 +67,6 @@ class Login : AppCompatActivity() {
                     Toast.makeText(this, "Wrong Username/Password.", Toast.LENGTH_SHORT).show()
                     println("That didn't work!")
                 })
-
-        queue.add(stringRequest)
-
+        queue.add(jsonRequest)
     }
 }
