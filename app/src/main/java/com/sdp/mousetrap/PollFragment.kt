@@ -30,8 +30,8 @@ class PollFragment : Fragment() {
 
     var delegate: FragmentDelegate? = null
     val answers = Bundle()
-    val questions: ArrayList<Question> = ArrayList()
-    val alternatives: ArrayList<Alternative> = ArrayList()
+    val questions: MutableList<Question> = ArrayList()
+    val alternatives: MutableList<Alternative> = ArrayList()
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -52,16 +52,16 @@ class PollFragment : Fragment() {
     }
 
     fun createQuestions(poll: Poll, view: View) {
-        questions.add(Question(poll, "Do you like Burger King?", 0))
         questions.add(Question(poll, "How much?", 1))
-            alternatives.add(Alternative(questions[1], "Not much"))
-            alternatives.add(Alternative(questions[1], "Very much"))
-            alternatives.add(Alternative(questions[1], "A lot"))
+        alternatives.add(Alternative(questions[0], "Not much"))
+        alternatives.add(Alternative(questions[0], "Very much"))
+        alternatives.add(Alternative(questions[0], "A lot"))
         questions.add(Question(poll, "What's your favorite one?", 2))
-            alternatives.add(Alternative(questions[2], "Wopper"))
-            alternatives.add(Alternative(questions[2], "Tenders"))
-            alternatives.add(Alternative(questions[2], "Chocolate pie"))
-            alternatives.add(Alternative(questions[2], "Fries"))
+        alternatives.add(Alternative(questions[1], "Wopper"))
+        alternatives.add(Alternative(questions[1], "Tenders"))
+        alternatives.add(Alternative(questions[1], "Chocolate pie"))
+        alternatives.add(Alternative(questions[1], "Fries"))
+        questions.add(Question(poll, "Do you like Burger King?", 0))
     }
 
     fun setUpPollIntro(poll: Poll, view: View) {
@@ -94,7 +94,7 @@ class PollFragment : Fragment() {
                         question.type == 0 -> {
                             //create open question in layouts[i]
                             var transaction = delegate!!.createFragmentManager().beginTransaction()
-                            transaction.replace(layouts[i].id, OpenQuestionFragment.newInstance(answers, last_question, i, layouts, question.question))
+                            transaction.replace(layouts[i].id, OpenQuestionFragment.newInstance(answers, last_question, i, layouts, question.question, delegate))
                             transaction.commit()
                         }
                         question.type == 1 -> {
@@ -106,7 +106,7 @@ class PollFragment : Fragment() {
                                 }
                             }
                             var transaction = delegate!!.createFragmentManager().beginTransaction()
-                            transaction.replace(layouts[i].id, UniqueChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question))
+                            transaction.replace(layouts[i].id, UniqueChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question, delegate))
                             transaction.commit()
                         }
                         question.type == 2 -> {

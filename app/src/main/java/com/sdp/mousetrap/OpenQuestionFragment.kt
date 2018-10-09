@@ -17,7 +17,7 @@ import android.widget.TextView
 
 class OpenQuestionFragment : Fragment() {
     companion object {
-        fun newInstance(answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String): OpenQuestionFragment {
+        fun newInstance(answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String, delegate: FragmentDelegate?): OpenQuestionFragment {
             val fragment = OpenQuestionFragment()
             val args = Bundle()
             args.putBundle("answers", answers)
@@ -25,6 +25,7 @@ class OpenQuestionFragment : Fragment() {
             args.putInt("index", index)
             args.putSerializable("frame", frame)
             args.putString("question", question)
+            args.putSerializable("delegate", delegate)
             fragment.arguments = args
             return fragment
         }

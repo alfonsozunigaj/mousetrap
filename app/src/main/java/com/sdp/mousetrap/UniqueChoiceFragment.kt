@@ -13,7 +13,7 @@ import com.sdp.mousetrap.DB.Alternative
 
 class UniqueChoiceFragment : Fragment() {
     companion object {
-        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String): UniqueChoiceFragment {
+        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String, delegate: FragmentDelegate?): UniqueChoiceFragment {
             val fragment = UniqueChoiceFragment()
             val args = Bundle()
             args.putSerializable("choices", choices)
@@ -22,6 +22,7 @@ class UniqueChoiceFragment : Fragment() {
             args.putInt("index", index)
             args.putSerializable("frame", frame)
             args.putString("question", question)
+            args.putSerializable("delegate", delegate)
             fragment.arguments = args
             return fragment
         }
