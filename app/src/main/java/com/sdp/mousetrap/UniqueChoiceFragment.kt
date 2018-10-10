@@ -9,11 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.sdp.mousetrap.DB.Alternative
+import com.sdp.mousetrap.DB.Question
 
 
 class UniqueChoiceFragment : Fragment() {
     companion object {
-        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String, delegate: FragmentDelegate?): UniqueChoiceFragment {
+        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: Question, delegate: FragmentDelegate?): UniqueChoiceFragment {
             val fragment = UniqueChoiceFragment()
             val args = Bundle()
             args.putSerializable("choices", choices)
@@ -21,7 +22,7 @@ class UniqueChoiceFragment : Fragment() {
             args.putBoolean("last_question", last_question)
             args.putInt("index", index)
             args.putSerializable("frame", frame)
-            args.putString("question", question)
+            args.putSerializable("question", question)
             args.putSerializable("delegate", delegate)
             fragment.arguments = args
             return fragment
@@ -33,9 +34,10 @@ class UniqueChoiceFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_unique_choice, container, false)
         val choices: ArrayList<*> = arguments["choices"] as ArrayList<*>
         val question_field: TextView = view.findViewById(R.id.question_body) as TextView
-        question_field.text = arguments["question"].toString()
+        val question: Question = arguments["question"] as Question
+        question_field.text = question.question
         setChoices(view, choices)
-        setButton(view)
+        setButton(view, choices, question)
         return view
     }
 
@@ -50,7 +52,7 @@ class UniqueChoiceFragment : Fragment() {
         }
     }
 
-    fun setButton(view: View) {
+    fun setButton(view: View, choices: ArrayList<*>, question: Question) {
         val button: Button = view.findViewById(R.id.button_next) as Button
         val last_question: Boolean = arguments["last_question"] as Boolean
         if (last_question) {
@@ -61,8 +63,11 @@ class UniqueChoiceFragment : Fragment() {
             val selectedOption = radioGroup.checkedRadioButtonId
             if (selectedOption != -1) {
                 val selectButton: RadioButton = view.findViewById(selectedOption) as RadioButton
+                var answer: ArrayList<Int> = ArrayList()
+                answer.add(question.type)
+                answer.add(getAlternativeId(selectButton.text.toString(), choices))
                 val answers = this.arguments["answers"] as Bundle
-                answers.putString(arguments["question"].toString(), selectButton.text.toString())
+                answers.putSerializable(question.id.toString(), answer)
                 val i: Int = arguments["index"] as Int
                 val frames: ArrayList<FrameLayout> = this.arguments["frame"] as ArrayList<FrameLayout>
                 frames[i].visibility = View.GONE
@@ -95,5 +100,15 @@ class UniqueChoiceFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun getAlternativeId(text: String, choices: ArrayList<*>): Int {
+        for (i in 0 until choices.count()) {
+            var choice: Alternative = choices[i] as Alternative
+            if (choice.value == text) {
+                return choice.id
+            }
+        }
+        return 0
     }
 }

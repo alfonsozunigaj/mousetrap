@@ -13,18 +13,20 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.sdp.mousetrap.DB.Question
+import java.io.Serializable
 
 
 class OpenQuestionFragment : Fragment() {
     companion object {
-        fun newInstance(answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String, delegate: FragmentDelegate?): OpenQuestionFragment {
+        fun newInstance(answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: Question, delegate: FragmentDelegate?): OpenQuestionFragment {
             val fragment = OpenQuestionFragment()
             val args = Bundle()
             args.putBundle("answers", answers)
             args.putBoolean("last_question", last_question)
             args.putInt("index", index)
             args.putSerializable("frame", frame)
-            args.putString("question", question)
+            args.putSerializable("question", question)
             args.putSerializable("delegate", delegate)
             fragment.arguments = args
             return fragment
@@ -36,12 +38,13 @@ class OpenQuestionFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_open_question, container, false)
         val question_field: TextView = view.findViewById(R.id.question_body) as TextView
-        question_field.text = arguments["question"].toString()
-        setButton(view)
+        val question: Question = arguments["question"] as Question
+        question_field.text = question.question
+        setButton(view, question)
         return view
     }
 
-    fun setButton(view: View) {
+    fun setButton(view: View, question: Question) {
         val button: Button = view.findViewById(R.id.button_next) as Button
         val last_question: Boolean = arguments["last_question"] as Boolean
         if (last_question) {
@@ -49,10 +52,13 @@ class OpenQuestionFragment : Fragment() {
         }
         button.setOnClickListener {
             val editText: EditText = view.findViewById(R.id.answer_block) as EditText
-            val answers = this.arguments["answers"] as Bundle
+            val answers: Bundle = this.arguments["answers"] as Bundle
+            var answer: ArrayList<Serializable> = ArrayList()
+            answer.add(question.type)
+            answer.add(editText.text.toString())
+            answers.putSerializable(question.id.toString(), answer)
             val i: Int = arguments["index"] as Int
             val frames: ArrayList<FrameLayout> = this.arguments["frame"] as ArrayList<FrameLayout>
-            answers.putString(arguments["question"].toString(), editText.text.toString())
             frames[i].visibility = GONE
             if (!(arguments["last_question"] as Boolean)) {
                 frames[i + 1].visibility = VISIBLE

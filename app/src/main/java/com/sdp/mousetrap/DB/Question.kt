@@ -1,6 +1,8 @@
 package com.sdp.mousetrap.DB
 
-class Question {
+import java.io.Serializable
+
+class Question : Serializable {
     var id : Int
     var poll: Poll
     var question: String

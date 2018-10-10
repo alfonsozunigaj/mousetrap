@@ -54,6 +54,7 @@ class PollFragment : Fragment() {
         var view : View = inflater.inflate(R.layout.fragment_poll, container, false)
         val startButton = view.findViewById(R.id.start_button) as Button
         startButton.isClickable=false
+        answers.putInt("poll_id", poll.id)
         createQuestions(poll, view)
         //setUpPollIntro(poll, view)
         return view
@@ -124,7 +125,7 @@ class PollFragment : Fragment() {
                         question.type == 0 -> {
                             //create open question in layouts[i]
                             var transaction = delegate!!.createFragmentManager().beginTransaction()
-                            transaction.replace(layouts[i].id, OpenQuestionFragment.newInstance(answers, last_question, i, layouts, question.question, delegate))
+                            transaction.replace(layouts[i].id, OpenQuestionFragment.newInstance(answers, last_question, i, layouts, question, delegate))
                             transaction.commit()
                         }
                         question.type == 1 -> {
@@ -136,7 +137,7 @@ class PollFragment : Fragment() {
                                 }
                             }
                             var transaction = delegate!!.createFragmentManager().beginTransaction()
-                            transaction.replace(layouts[i].id, UniqueChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question, delegate))
+                            transaction.replace(layouts[i].id, UniqueChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question, delegate))
                             transaction.commit()
                         }
                         question.type == 2 -> {
@@ -148,7 +149,7 @@ class PollFragment : Fragment() {
                                 }
                             }
                             var transaction = delegate!!.createFragmentManager().beginTransaction()
-                            transaction.replace(layouts[i].id, MultipleChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question.question, delegate))
+                            transaction.replace(layouts[i].id, MultipleChoiceFragment.newInstance(my_alternatives, answers, last_question, i, layouts, question, delegate))
                             transaction.commit()
                         }
                     }

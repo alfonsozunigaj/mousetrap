@@ -11,11 +11,13 @@ import android.widget.*
 import com.sdp.mousetrap.DB.Alternative
 import android.R.attr.keySet
 import android.app.FragmentManager
+import com.sdp.mousetrap.DB.Question
+import java.io.Serializable
 
 
 class MultipleChoiceFragment : Fragment() {
     companion object {
-        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: String, delegate: FragmentDelegate?): MultipleChoiceFragment {
+        fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: Question, delegate: FragmentDelegate?): MultipleChoiceFragment {
             val fragment = MultipleChoiceFragment()
             val args = Bundle()
             args.putSerializable("choices", choices)
@@ -23,7 +25,7 @@ class MultipleChoiceFragment : Fragment() {
             args.putBoolean("last_question", last_question)
             args.putInt("index", index)
             args.putSerializable("frame", frame)
-            args.putString("question", question)
+            args.putSerializable("question", question)
             args.putSerializable("delegate", delegate)
             fragment.arguments = args
             return fragment
@@ -38,9 +40,10 @@ class MultipleChoiceFragment : Fragment() {
         val view: View = inflater.inflate(R.layout.fragment_multiple_choice, container, false)
         val choices: ArrayList<*> = arguments["choices"] as ArrayList<*>
         val question_field: TextView = view.findViewById(R.id.question_body) as TextView
-        question_field.text = arguments["question"].toString()
+        val question: Question = arguments["question"] as Question
+        question_field.text = question.question
         setChoices(view, choices)
-        setButton(view)
+        setButton(view, choices, question)
         return view
     }
 
@@ -55,7 +58,7 @@ class MultipleChoiceFragment : Fragment() {
         }
     }
 
-    fun setButton(view: View) {
+    fun setButton(view: View, choices: ArrayList<*>, question: Question) {
         val button: Button = view.findViewById(R.id.button_next) as Button
         val last_question: Boolean = arguments["last_question"] as Boolean
         if (last_question) {
@@ -64,16 +67,21 @@ class MultipleChoiceFragment : Fragment() {
         button.setOnClickListener {
             val ll: LinearLayout = view.findViewById(R.id.multiple_options_layout) as LinearLayout
             val count = ll.childCount
+            var my_picks: ArrayList<Int> = ArrayList()
             for (i in 0 until count) {
                 val v = ll.getChildAt(i)
                 if (v is CheckBox) {
-                    if (v.isChecked and !(answers.contains(v.text))) {
-                        answers.add(v.text as String)
+                    val id: Int = getAlternativeId(v.text as String, choices)
+                    if (v.isChecked and !(my_picks.contains(id))) {
+                        my_picks.add(id)
                     }
                 }
             }
+            var answer: ArrayList<Serializable> = ArrayList()
+            answer.add(question.type)
+            answer.add(my_picks)
             val answers_bundle: Bundle = this.arguments["answers"] as Bundle
-            answers_bundle.putSerializable(arguments["question"].toString(), answers)
+            answers_bundle.putSerializable(question.id.toString(), answer)
             val i: Int = arguments["index"] as Int
             val frames: ArrayList<FrameLayout> = this.arguments["frame"] as ArrayList<FrameLayout>
             frames[i].visibility = View.GONE
@@ -105,5 +113,15 @@ class MultipleChoiceFragment : Fragment() {
                 dialog.show()
             }
         }
+    }
+
+    fun getAlternativeId(text: String, choices: ArrayList<*>): Int {
+        for (i in 0 until choices.count()) {
+            var choice: Alternative = choices[i] as Alternative
+            if (choice.value == text) {
+                return choice.id
+            }
+        }
+        return 0
     }
 }
