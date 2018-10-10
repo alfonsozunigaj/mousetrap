@@ -71,7 +71,7 @@ class PollFragment : Fragment() {
                     for (i in 0..(Qs.length() - 1)) {
                         val item = Qs.getJSONObject(i)
                         println("Response is: $item")
-                        val id = item.getString("url").removeSurrounding("http://127.0.0.1:8000/api/questions/","/").toInt()
+                        val id = item.getString("id").toInt()
                         val description = item.getString("question")
                         val type = item.getString("type").toInt()
                         questions.add(Question(id,poll, description, type))
@@ -80,7 +80,7 @@ class PollFragment : Fragment() {
                             for (j in 0..(As.length() - 1)) {
                                 val item2 = As.getJSONObject(j)
                                 println("Alternative is: $item2")
-                                val id2 = item2.getString("url").removeSurrounding("http://127.0.0.1:8000/api/alternatives/","/").toInt()
+                                val id2 = item2.getString("id").toInt()
                                 alternatives.add(Alternative(id2, questions[i], item2.getString("value")))
                             }
                         }

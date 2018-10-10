@@ -2,17 +2,27 @@ package com.sdp.mousetrap
 
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.sdp.mousetrap.DB.Alternative
 import com.sdp.mousetrap.DB.Question
+import org.json.JSONObject
+import java.io.Serializable
 
 
 class UniqueChoiceFragment : Fragment() {
+    private val Preferences_name : String = "Prefs"
+    private var Preferences: SharedPreferences? = null
+
     companion object {
         fun newInstance(choices: ArrayList<Alternative>, answers: Bundle, last_question: Boolean, index: Int, frame: ArrayList<FrameLayout>, question: Question, delegate: FragmentDelegate?): UniqueChoiceFragment {
             val fragment = UniqueChoiceFragment()
@@ -79,12 +89,7 @@ class UniqueChoiceFragment : Fragment() {
                     builder.setTitle("All done")
                     builder.setMessage("Would you like to go back to the home page?")
                     builder.setPositiveButton("YES") { dialog, which ->
-
-                        /**
-                         *!!!!!!!!!!!!
-                         *HERE IS WHERE YOU MUST SEND THE ANSWERS AND INFORMATION BACK TO THE SERVER
-                         *!!!!!!!!!!!!
-                         */
+                        creatUserSurvey(answers)
 
                         val delegate: FragmentDelegate = arguments["delegate"] as FragmentDelegate
                         val fm: android.support.v4.app.FragmentManager = delegate.createFragmentManager()
@@ -110,5 +115,97 @@ class UniqueChoiceFragment : Fragment() {
             }
         }
         return 0
+    }
+    fun creatUserSurvey(bundle: Bundle?) {
+        val poll_id = bundle!!.getSerializable("poll_id") as Int
+        bundle.remove("poll_id")
+        Preferences = this.activity.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
+        val user_id : Int = Preferences!!.getInt("id", 0)
+        val user_survey : JSONObject = JSONObject()
+        user_survey.put("survey", poll_id)
+        user_survey.put("user",user_id)
+        user_survey.put("finished",true)
+
+        val queue = Volley.newRequestQueue(context)
+        val url = "https://app-api.assadi.io/api/user_surveys/"
+
+        val jsonRequest = JsonObjectRequest(url, user_survey,
+                Response.Listener { response ->
+                    println("Response is: $response")
+                    val us_id : Int = response.getInt("id")
+                    sendAnswers(bundle,us_id)
+                },
+                Response.ErrorListener { error ->
+                    error.printStackTrace()
+                    //Toast.makeText(this, "Wrong Username/Password.", Toast.LENGTH_SHORT).show()
+                    println("That didn't work!")
+                })
+        queue.add(jsonRequest)
+
+    }
+
+    fun sendAnswers(bundle: Bundle?, us_id: Int) {
+
+        for (key in bundle!!.keySet()) {
+            val answer : JSONObject = JSONObject()
+            answer.put("question", key)
+            answer.put("user_survey",us_id)
+            val values  = bundle.getSerializable(key) as ArrayList<Serializable>
+            val type = values.get(0)
+            answer.put("type",type)
+            if (type == 0){
+                answer.put("answer",values.get(1))
+            }
+            else if (type == 1){
+                answer.put("answer","null")
+            }
+            else if (type == 2){
+                answer.put("answer","null")
+            }
+
+            val queue = Volley.newRequestQueue(context)
+            val url = "https://app-api.assadi.io/api/answers/"
+
+            val jsonRequest = JsonObjectRequest(url, answer,
+                    Response.Listener { response ->
+                        println("Response is: $response")
+                        val ans_id : Int = response.getInt("id")
+                        if (type == 1){
+                            val alt = values.get(1) as Int
+                            val mult = ArrayList<Int>()
+                            mult.add(alt)
+                            sendAlternatives(mult,ans_id)
+                        }
+                        else if (type == 2){
+                            val mult = values.get(1) as ArrayList<Int>
+                            sendAlternatives(mult,ans_id)
+                        }
+                    },
+                    Response.ErrorListener { error ->
+                        error.printStackTrace()
+                        println("That didn't work!")
+                    })
+            queue.add(jsonRequest)
+        }
+    }
+
+    fun sendAlternatives(mult: ArrayList<Int>, ans_id: Int){
+        for (i in 0..(mult.size - 1)) {
+            val alternative : JSONObject = JSONObject()
+            alternative.put("answer", ans_id)
+            alternative.put("alternative", mult.get(i))
+            val queue = Volley.newRequestQueue(context)
+            val url = "https://app-api.assadi.io/api/alternative_answers/"
+
+            val jsonRequest = JsonObjectRequest(url, alternative,
+                    Response.Listener { response ->
+                        println("Response is: $response")
+                    },
+                    Response.ErrorListener { error ->
+                        error.printStackTrace()
+                        println("That didn't work!")
+                    })
+            queue.add(jsonRequest)
+        }
     }
 }
