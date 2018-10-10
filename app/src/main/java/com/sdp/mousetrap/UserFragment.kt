@@ -76,6 +76,10 @@ class UserFragment : Fragment() {
                     val birth = response.getString("birth_date")
                     val birthtv = view.findViewById(R.id.bd) as TextView
                     birthtv.text = "$birth"
+
+                    val answered_polls = response.getString("answered_polls")
+                    val answered_pollstv = view.findViewById(R.id.tv2) as TextView
+                    answered_pollstv.text = "$answered_polls"
                 },
                 Response.ErrorListener { error ->
                     error.printStackTrace()
