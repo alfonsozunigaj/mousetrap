@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.sdp.mousetrap.DB.Category
@@ -47,10 +48,7 @@ class CategoriesFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.rvCategoriesList) as RecyclerView
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = LinearLayoutManager(context)
-        var categories: ArrayList<Category> = getCategories()
-        setUpNew(view, categories)
-        mAdapter.RecyclerAdapterCategories(categories, delegate as FragmentDelegate)
-        mRecyclerView.adapter = mAdapter
+        getCategories(view)
     }
 
 
@@ -66,34 +64,59 @@ class CategoriesFragment : Fragment() {
     }
 
 
-    fun getCategories(): ArrayList<Category> {
-        var categories: ArrayList<Category> = ArrayList()
+    fun getCategories(view: View) {
+
         Preferences = this.activity.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
         val user_id : Int = Preferences!!.getInt("id", 0)
 
         val queue = Volley.newRequestQueue(context)
         val url = "https://app-api.assadi.io/api/user_categories/?u_id=$user_id"
 
-        val jsonRequest = JsonObjectRequest(url, null,
+        val jsonRequest = JsonArrayRequest(url,
                 Response.Listener { response ->
                     println("Response is: $response")
+                    val category_ids = ArrayList<Int>()
+                    for (i in 0..(response.length() - 1)) {
+                        val id = response.getJSONObject(i).getString("category").toInt()
+                        category_ids.add(id)
+                    }
+                    getCategoriesNames(view, category_ids)
                 },
                 Response.ErrorListener { error ->
                     error.printStackTrace()
                     println("That didn't work!")
                 })
         queue.add(jsonRequest)
-        categories.add(Category(1, "Ingeniero"))
-        categories.add(Category(2, "Gamer"))
-        categories.add(Category(3, "Jardineria"))
-        categories.add(Category(4, "Cocina"))
-        categories.add(Category(5, "Catolicismo"))
-        categories.add(Category(6, "Deportes Extremos"))
-        categories.add(Category(7, "Playa"))
-        categories.add(Category(8, "Viajar"))
-        categories.add(Category(9, "Perros"))
-        categories.add(Category(10, "Historia"))
-        return categories
+    }
+
+    fun getCategoriesNames(view: View, category_ids: ArrayList<Int>){
+        var categories: ArrayList<Category> = ArrayList()
+        val queue = Volley.newRequestQueue(context)
+        val url = "https://app-api.assadi.io/api/category_values/"
+
+        val jsonRequest = JsonArrayRequest(url,
+                Response.Listener { response ->
+                    println("Response is: $response")
+                    val category_names = ArrayList<String>()
+                    for (i in 0..(response.length() - 1)) {
+                        val id = response.getJSONObject(i).getInt("id")
+                        if (category_ids.contains(id)){
+                            category_names.add(response.getJSONObject(i).getString("value"))
+                        }
+                    }
+                    for (i in 0..(category_names.size - 1)) {
+                        categories.add(Category(i, category_names.get(i)))
+                    }
+                    setUpNew(view, categories)
+                    mAdapter.RecyclerAdapterCategories(categories, delegate as FragmentDelegate)
+                    mRecyclerView.adapter = mAdapter
+
+                },
+                Response.ErrorListener { error ->
+                    error.printStackTrace()
+                    println("That didn't work!")
+                })
+        queue.add(jsonRequest)
     }
 
 
