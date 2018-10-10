@@ -2,6 +2,7 @@ package com.sdp.mousetrap
 
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -10,6 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.sdp.mousetrap.DB.Category
 
 
@@ -18,6 +22,9 @@ class CategoriesFragment : Fragment() {
     lateinit var mRecyclerView : RecyclerView
     val mAdapter : RecyclerAdapterCategories = RecyclerAdapterCategories()
     var delegate: FragmentDelegate? = null
+
+    private val Preferences_name : String = "Prefs"
+    private var Preferences: SharedPreferences? = null
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -61,6 +68,21 @@ class CategoriesFragment : Fragment() {
 
     fun getCategories(): ArrayList<Category> {
         var categories: ArrayList<Category> = ArrayList()
+        Preferences = this.activity.getSharedPreferences(Preferences_name, Context.MODE_PRIVATE)
+        val user_id : Int = Preferences!!.getInt("id", 0)
+
+        val queue = Volley.newRequestQueue(context)
+        val url = "https://app-api.assadi.io/api/user_categories/?u_id=$user_id"
+
+        val jsonRequest = JsonObjectRequest(url, null,
+                Response.Listener { response ->
+                    println("Response is: $response")
+                },
+                Response.ErrorListener { error ->
+                    error.printStackTrace()
+                    println("That didn't work!")
+                })
+        queue.add(jsonRequest)
         categories.add(Category(1, "Ingeniero"))
         categories.add(Category(2, "Gamer"))
         categories.add(Category(3, "Jardineria"))

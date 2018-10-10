@@ -116,7 +116,6 @@ class OpenQuestionFragment : Fragment() {
                 },
                 Response.ErrorListener { error ->
                     error.printStackTrace()
-                    //Toast.makeText(this, "Wrong Username/Password.", Toast.LENGTH_SHORT).show()
                     println("That didn't work!")
                 })
         queue.add(jsonRequest)
